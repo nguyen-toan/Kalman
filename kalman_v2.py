@@ -213,7 +213,7 @@ class KalmanFilter(object):
                                 method = method)
         
 if __name__ == "__main__":
-    target_dir = "C:\Users\toan.nguyen\Google ドライブ\研究開発\時系列_状態空間\kalman\mykalman\"
+    target_dir = "./"
     targets = np.loadtxt(target_dir + 'target.csv', delimiter = ',', unpack = True)
     chk = 0
     
@@ -239,69 +239,9 @@ if __name__ == "__main__":
     h = np.zeros((1, m_y.shape[0]))
     
     kf = KalmanFilter(num, y, mu0, Sigma0, Phi, m_y, h, initpar)
-    # est = kf.optimize_params('Powell')
-    # print(est)
-    """
-    # default, CG, Newton-CG, BFGS:    error: ValueError: objects are not aligned
+    est = kf.optimize_params('Powell')
+    print(est)
     
-    # Nelder-Mead
-    # est = [ -1.66371007e-04, 5.10463718e-08, 7.77654102e-02, -1.83669072e-02, 2.99860668e-01]
-    status: 0
-    nfev: 648
- success: True
-     fun: -511.19699744659329
-       x: array([ -1.66371007e-04,   5.10463718e-08,   7.77654102e-02,
-        -1.83669072e-02,   2.99860668e-01])
- message: 'Optimization terminated successfully.'
-     nit: 382
-     
-    # Powell: fast
-    # est = [  6.24888471e-10,   8.61821954e-14,   5.35695417e-02, -1.49950795e-02,   3.96643123e-03]
-     status: 0
- success: True
-   direc: array([[ 1.,  0.,  0.,  0.,  0.],
-       [ 0.,  1.,  0.,  0.,  0.],
-       [ 0.,  0.,  1.,  0.,  0.],
-       [ 0.,  0.,  0.,  1.,  0.],
-       [ 0.,  0.,  0.,  0.,  1.]])
-    nfev: 220
-     fun: array(-554.1146586389351)
-       x: array([  6.24888471e-10,   8.61821954e-14,   5.35695417e-02,
-        -1.49950795e-02,   3.96643123e-03])
- message: 'Optimization terminated successfully.'
-     nit: 3
-     
-    # Anneal: value is BIG, long runtime
-    # est = [ -2.14967973,   5.37881934,  33.90043744, -40.01700198, -47.05939541]
-      status: 0
- success: True
-  accept: 699
-    nfev: 4251
-       T: array([[  5.87467845e-11]])
-     fun: array([[-547.4354928]])
-       x: array([[ -1.20232621e-03,  -1.01785655e-04,  -5.54236365e-02,
-         -3.39332249e-02,   1.84722863e-01]])
- message: 'Points no longer changing'
-     nit: 84
-     
-    
-    
-    # L-BFGS-B
-    # est = [ 2.73620390e-06,  -2.44110270e-09,   5.35723161e-02, -1.50965118e-02,   9.95268403e-02]
-    
-    # TNC
-    # est = [  7.16635700e-06,  -4.83307293e-09,   5.35689367e-02, -1.55180124e-02,   1.43285834e-01]
-    
-    # COBYLA: fast
-    # est = [  2.13604390e-02,  -4.78535507e-05,   9.74439329e-02, 3.21175770e-01,   1.80490864e-01]
-    
-    # SLSQP: fast    
-    # est = [  2.73312031e-08,  -6.34171048e-09,   5.35694953e-02, -1.49956432e-02,   3.98322031e-03]    
-    """
-
-
-
-    est = [-0.01190288, 0.00066779, 0.23152909, -0.01503034, 0.01186958]
     # smooth
     cQ1 = est[0] ** 2
     cQ2 = est[1] ** 2
@@ -333,18 +273,12 @@ if __name__ == "__main__":
     for i in range(num):
         ex_var[i, ] = np.dot(h, np.asmatrix(m_y[:, i]).T)
     
-#    pl.figure()
-#    lines_true = pl.plot(y, color = 'k')
-#    lines_filt = pl.plot(ex_tr, color = 'r', linestyle = 'dashed')
-#    lines_smooth = pl.plot(cycle, color = 'b', linestyle = 'dotted')
-#    pl.legend((lines_true[0], lines_filt[0], lines_smooth[0]),
-#           ('true', 'trend', 'cycle'),
-#           loc = 'upper right'
-#    )
-#    pl.show()
-
     pl.figure()
-#    lines_true = pl.plot(y, color = 'k')
-    lines_trend = pl.plot(ex_tr, color = 'r', linestyle = 'dashed')
-#    lines_cycle = pl.plot(cycle, color = 'b', linestyle = 'dotted')
+    lines_true = pl.plot(y, color = 'k')
+    lines_filt = pl.plot(ex_tr, color = 'r', linestyle = 'dashed')
+    lines_smooth = pl.plot(cycle, color = 'b', linestyle = 'dotted')
+    pl.legend((lines_true[0], lines_filt[0], lines_smooth[0]),
+           ('true', 'trend', 'cycle'),
+           loc = 'upper right'
+    )
     pl.show()
